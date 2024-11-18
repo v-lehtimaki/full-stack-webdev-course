@@ -6,11 +6,30 @@ const Header = ({headline}) => (
   </>
 )
 
-const Button = ({handleClick, text}) => (
-  <button onClick={handleClick}>
-    {text}
-  </button>
-)
+const Button = ({handleClick, text}) => {
+  return (
+    <>
+      <button onClick={handleClick}>
+        {text}
+      </button>
+    </>
+  )
+}
+
+const StatisticLine = ({text, value}) => {
+  if (text === 'Positive') {
+    value = value + ' %'
+  }
+  
+  return (
+    <>
+      <tr>
+          <td>{text}</td> 
+          <td>{value}</td>
+      </tr>
+    </>
+  )
+}
 
 const Statistics = ({textFields, good, neutral, bad}) => {
 
@@ -24,27 +43,19 @@ const Statistics = ({textFields, good, neutral, bad}) => {
     average = calculateAverage(total)
     positiveFeedback = calculatePositiveFeedback(total)
 
-    return (
-      <>
-        <p>
-          <span>{textFields.good}</span> <span>{good}</span>
-        </p>
-        <p>
-          <span>{textFields.neutral}</span> <span>{neutral}</span>
-        </p>
-        <p>
-          <span>{textFields.bad}</span> <span>{bad}</span>
-        </p>
-        <p>
-          <span>{textFields.all}</span> <span>{total}</span>
-        </p>
-        <p>
-          <span>{textFields.average}</span> <span>{average}</span>
-        </p>
-        <p>
-          <span>{textFields.positive}</span> <span>{positiveFeedback} %</span>
-        </p>
-      </>
+    return(
+      <div>
+        <table>
+          <tbody>
+            <StatisticLine text={textFields.good} value = {good} />
+            <StatisticLine text={textFields.neutral} value = {neutral} />
+            <StatisticLine text={textFields.bad} value = {bad} />
+            <StatisticLine text={textFields.all} value = {total} />
+            <StatisticLine text={textFields.average} value = {average} />
+            <StatisticLine text={textFields.positive} value = {positiveFeedback} />
+          </tbody>
+        </table>
+      </div>
     )
   } else {
     total = 0
