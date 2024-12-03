@@ -45,6 +45,18 @@ const Filter = ({handleChange, filteredName}) => {
   )
 }
 
+const Notification = ({ message, className }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className={className} >
+      {message}
+    </div>
+  )
+}
+
 const PersonForm = (props) => {
   return (
     <div>
@@ -74,6 +86,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredName, setFilteredName] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [className, setClassName] = useState('notification')
 
   const hook = () => {
     console.log('effect')
@@ -102,6 +116,12 @@ const App = () => {
         .create(nameObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setNotificationMessage(`Added ${returnedPerson.name}`)
+
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
+
           console.log('Got the personResponse!: ', returnedPerson)
         })
       
@@ -115,11 +135,21 @@ const App = () => {
           .update(changedPerson.id, changedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+            setNotificationMessage(`The phone number of ${returnedPerson.name} has been changed!`)
+
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
           })
           .catch(error => {
-            alert(
-              `The person '${changedPerson.name}' was already deleted from server!`
-            )
+            setClassName('notification-error')
+            setNotificationMessage(`The person ${changedPerson.name} was already deleted from server!`)
+
+            setTimeout(() => {
+              setNotificationMessage(null)
+              setClassName('notification')
+            }, 5000)
+            
             setPersons(persons.filter(person => person.id !== changedPerson.id))
           })    
       }
@@ -138,6 +168,11 @@ const App = () => {
         .then(deletedPerson => {
           console.log('deletedPerson: ', deletedPerson)
           setPersons(persons.filter(person => person.id !== deletedPerson.id))
+          setNotificationMessage(`Deleted ${deletedPerson.name}`)
+
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
     }
   }
@@ -165,6 +200,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} className={className} />
       <Filter handleChange={handleFilteredNameChange} filteredName={filteredName} />
       <h2>Add a New Name </h2>
       <PersonForm 
