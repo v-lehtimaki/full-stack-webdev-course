@@ -161,6 +161,7 @@ const App = () => {
 
   const deletePerson = (id, name) => {
     console.log('Deleting: ', name)
+    console.log('Deleting id: ', id)
 
     if (window.confirm(`Delete ${name}?`)) {
       personService
